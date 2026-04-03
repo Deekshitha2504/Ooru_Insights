@@ -1,0 +1,136 @@
+=== DATA INFO ===
+<class 'pandas.DataFrame'>
+RangeIndex: 8936 entries, 0 to 8935
+Data columns (total 16 columns):
+ #   Column                              Non-Null Count  Dtype  
+---  ------                              --------------  -----  
+ 0   Date                                8936 non-null   str    
+ 1   Area Name                           8936 non-null   str    
+ 2   Road/Intersection Name              8936 non-null   str    
+ 3   Traffic Volume                      8936 non-null   int64  
+ 4   Average Speed                       8936 non-null   float64
+ 5   Travel Time Index                   8936 non-null   float64
+ 6   Congestion Level                    8936 non-null   float64
+ 7   Road Capacity Utilization           8936 non-null   float64
+ 8   Incident Reports                    8936 non-null   int64  
+ 9   Environmental Impact                8936 non-null   float64
+ 10  Public Transport Usage              8936 non-null   float64
+ 11  Traffic Signal Compliance           8936 non-null   float64
+ 12  Parking Usage                       8936 non-null   float64
+ 13  Pedestrian and Cyclist Count        8936 non-null   int64  
+ 14  Weather Conditions                  8936 non-null   str    
+ 15  Roadwork and Construction Activity  8936 non-null   str    
+dtypes: float64(8), int64(3), str(5)
+memory usage: 1.1 MB
+
+=== MISSING VALUES ===
+Date                                  0
+Area Name                             0
+Road/Intersection Name                0
+Traffic Volume                        0
+Average Speed                         0
+Travel Time Index                     0
+Congestion Level                      0
+Road Capacity Utilization             0
+Incident Reports                      0
+Environmental Impact                  0
+Public Transport Usage                0
+Traffic Signal Compliance             0
+Parking Usage                         0
+Pedestrian and Cyclist Count          0
+Weather Conditions                    0
+Roadwork and Construction Activity    0
+dtype: int64
+
+=== DUPLICATES ===
+Total duplicates: 0
+
+=== FIRST 5 ROWS ===
+         Date  ... Roadwork and Construction Activity
+0  2022-01-01  ...                                 No
+1  2022-01-01  ...                                 No
+2  2022-01-01  ...                                 No
+3  2022-01-01  ...                                 No
+4  2022-01-01  ...                                 No
+
+[5 rows x 16 columns]
+
+=== UNIQUE VALUES IN CAT COLUMNS ===
+
+--- Column: Date ---
+Date
+2023-01-24    15
+2023-08-03    14
+2023-10-06    14
+2024-04-16    14
+2024-05-08    14
+2024-05-29    14
+2022-01-30    13
+2022-02-18    13
+2022-03-30    13
+2022-05-24    13
+2022-06-20    13
+2022-07-12    13
+2022-07-23    13
+2022-11-03    13
+2022-11-09    13
+Name: count, dtype: int64
+
+--- Column: Area Name ---
+Area Name
+Indiranagar        1720
+M.G. Road          1501
+Koramangala        1364
+Jayanagar          1173
+Hebbal              950
+Whitefield          942
+Yeshwanthpur        734
+Electronic City     552
+Name: count, dtype: int64
+
+--- Column: Road/Intersection Name ---
+Road/Intersection Name
+100 Feet Road          860
+CMH Road               860
+Anil Kumble Circle     759
+Trinity Circle         742
+Sony World Junction    684
+Sarjapur Road          680
+South End Circle       593
+Jayanagar 4th Block    580
+Marathahalli Bridge    492
+Ballari Road           476
+Hebbal Flyover         474
+ITPL Main Road         450
+Yeshwanthpur Circle    373
+Tumkur Road            361
+Hosur Road             277
+Name: count, dtype: int64
+
+--- Column: Weather Conditions ---
+Weather Conditions
+Clear       5426
+Overcast    1296
+Fog          959
+Rain         827
+Windy        428
+Name: count, dtype: int64
+
+--- Column: Roadwork and Construction Activity ---
+Roadwork and Construction Activity
+No     8054
+Yes     882
+Name: count, dtype: int64
+
+=== NUMERIC STATISTICS ===
+       Traffic Volume  ...  Pedestrian and Cyclist Count
+count     8936.000000  ...                   8936.000000
+mean     29236.048120  ...                    114.533348
+std      13001.808801  ...                     36.812573
+min       4233.000000  ...                     66.000000
+25%      19413.000000  ...                     94.000000
+50%      27600.000000  ...                    102.000000
+75%      38058.500000  ...                    111.000000
+max      72039.000000  ...                    243.000000
+
+[8 rows x 11 columns]
