@@ -1,63 +1,69 @@
+import sys
 import pandas as pd
 import numpy as np
 
-def clean_bengaluru_traffic_data(input_csv, output_csv):
-    """
-    Cleans the Bengaluru Traffic Dataset by optimizing data types, handling boolean
-    fields, and dealing with extreme outliers in numerical columns.
-    """
+def clean_bengaluru_traffic_data(input_csv, output_csv):#taking Banglore_traffic_Dataset as input CSV and creating Banglore_traffic_Cleaned as output CSV
+    
     print(f"Loading '{input_csv}'...")
-    df = pd.read_csv(input_csv)
+    df = pd.read_csv(input_csv)# to access the data in the CSV we have read it
 
     print("\n--- 1. Datetime Conversion ---")
-    # Using format='mixed' to handle potentially inconsistent date formats gracefully.
-    df['Date'] = pd.to_datetime(df['Date'], format='mixed')
+    df['Date'] = pd.to_datetime(df['Date'], format='mixed')#converting the date column's datatype from string to datetime for easier use in the dashboard
     print("Datatype of 'Date' changed to:", df['Date'].dtype)
 
     print("\n--- 2. Boolean Mapping ---")
-    # Replace the text "Yes" and "No" with actual boolean True/False values
-    # We use a dictionary mapping with the .replace() method
-    cleanup_nums = {"Roadwork and Construction Activity": {"Yes": True, "No": False}}
-    df = df.replace(cleanup_nums)
-    # Ensure the column type is actually treated as a Python bool
+    YtoT = {"Roadwork and Construction Activity": {"Yes": True, "No": False}}#converting the Yes to True and No to False in the Roadwork and Construction Activity column for easier recognition 
+    df = df.replace(YtoT)
     df['Roadwork and Construction Activity'] = df['Roadwork and Construction Activity'].astype(bool)
     print("Unique values in 'Roadwork and Construction Activity':", df['Roadwork and Construction Activity'].unique())
 
     print("\n--- 3. Categorical Variables Optimization ---")
-    # Convert string columns with limited unique values to 'category' datatype
-    categorical_cols = ['Area Name', 'Road/Intersection Name', 'Weather Conditions']
+    categorical_cols = ['Area Name', 'Road/Intersection Name', 'Weather Conditions']#Since there are repeated area names, if each area name has a value mapped to it instead of the whole name for memory optimization
     for col in categorical_cols:
-        df[col] = df[col].astype('category')
+        df[col] = df[col].astype('category')#coversion from string type to categorical type
         print(f"Converted '{col}' to category. Memory optimized.")
 
-    print("\n--- 4. Outlier Detection & Handling (IQR Method) ---")
-    # We will compute the IQR for numerical fields like 'Traffic Volume'
-    # And then we "clip" the outliers to the upper and lower fences.
-    # Traffic Volume handling (IQR Method)
-    col = 'Traffic Volume'
-    Q1 = df[col].quantile(0.25)
-    Q3 = df[col].quantile(0.75)
-    IQR = Q3 - Q1
-    lower_bound = Q1 - 2.0 * IQR
-    upper_bound = Q3 + 2.0 * IQR
-    outliers = df[(df[col] < lower_bound) | (df[col] > upper_bound)]
-    print(f"Found {len(outliers)} outliers in '{col}'. Expected range: [{lower_bound:.2f}, {upper_bound:.2f}]")
-    df[col] = df[col].clip(lower=lower_bound, upper=upper_bound)
-    print(f"Values in '{col}' clipped smoothly to their respective bounds.\n")
+    print("\n--- 4. Adding Latitude and Longitude Columns ---")
+    road_coords = {
+    '100 Feet Road': [12.9626, 77.6381],
+    'CMH Road': [12.9784, 77.6385],
+    'Anil Kumble Circle': [12.9757, 77.5992],
+    'Trinity Circle': [12.9730, 77.6171],
+    'Sony World Junction': [12.9365, 77.6252],
+    'Sarjapur Road': [12.9248, 77.6534],
+    'South End Circle': [12.9385, 77.5801],
+    'Jayanagar 4th Block': [12.9285, 77.5830],
+    'Marathahalli Bridge': [12.9561, 77.6991],
+    'Ballari Road': [13.0184, 77.5891],
+    'Hebbal Flyover': [13.0354, 77.5913],
+    'ITPL Main Road': [12.9863, 77.7337],
+    'Yeshwanthpur Circle': [13.0232, 77.5501],
+    'Tumkur Road': [13.0333, 77.5333],
+    'Hosur Road': [12.9100, 77.6250],
+    'Silk Board Junction': [12.9176, 77.6226]}
+    #adding a latitude and longitude columns for mapping
+    df['latitude'] = df['Road/Intersection Name'].map(lambda x: road_coords.get(x, [12.9716, 77.5946])[0])
+    df['longitude'] = df['Road/Intersection Name'].map(lambda x: road_coords.get(x, [12.9716, 77.5946])[1])
 
-    # Average Speed handling (Manual Cap)
-    col = 'Average Speed'
-    upper_bound = 110.0
-    outliers = df[df[col] > upper_bound]
-    print(f"Found {len(outliers)} outliers in '{col}'. Manual cap applied at: {upper_bound}")
-    df[col] = df[col].clip(upper=upper_bound)
-    print(f"Values in '{col}' over {upper_bound} clipped smoothly to {upper_bound}.\n")
+    print("\n--- 5. Adding Time Features ---")
+    df['Day_of_Week'] = df['Date'].dt.dayofweek
+    df['Day_Name'] = df['Date'].dt.day_name()
+    df['Is_Weekend'] = df['Day_of_Week'] >= 5
+    df['Month'] = df['Date'].dt.month
 
-    print(f"--- Saving Cleaned Dataset ---")
+    print("\n--- 6. Adding Stress Score ---")                        
+    df['Stress Score']=(df['Traffic Volume']/df['Average Speed'])
+    
+    print(f"\n--- Saving Cleaned Dataset ---")
     df.to_csv(output_csv, index=False)
-    print(f"Dataset successfully saved to '{output_csv}'!")
+    print(f"\nDataset successfully saved to '{output_csv}'!")
 
 if __name__ == "__main__":
     INPUT_FILE = "Banglore_traffic_Dataset.csv"
     OUTPUT_FILE = "Banglore_traffic_Cleaned.csv"
-    clean_bengaluru_traffic_data(INPUT_FILE, OUTPUT_FILE)
+    LOG_FILE = "clean_data_output.txt"
+    
+    with open(LOG_FILE, 'w') as f:
+        sys.stdout = f #logging everything into the text file which is been printed into the terminal for record 
+        clean_bengaluru_traffic_data(INPUT_FILE, OUTPUT_FILE)
+        sys.stdout = sys.__stdout__ #setting the terminal output to normal mode

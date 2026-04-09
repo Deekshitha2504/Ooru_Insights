@@ -1,0 +1,22 @@
+Loading 'Banglore_traffic_Dataset.csv'...
+
+--- 1. Datetime Conversion ---
+Datatype of 'Date' changed to: datetime64[us]
+
+--- 2. Boolean Mapping ---
+Unique values in 'Roadwork and Construction Activity': [False  True]
+
+--- 3. Categorical Variables Optimization ---
+Converted 'Area Name' to category. Memory optimized.
+Converted 'Road/Intersection Name' to category. Memory optimized.
+Converted 'Weather Conditions' to category. Memory optimized.
+
+--- 4. Adding Latitude and Longitude Columns ---
+
+--- 5. Adding Time Features ---
+
+--- 6. Adding Stress Score ---
+
+--- Saving Cleaned Dataset ---
+
+Dataset successfully saved to 'Banglore_traffic_Cleaned.csv'!
