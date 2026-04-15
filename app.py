@@ -1,28 +1,35 @@
 import streamlit as st
 import pandas as pd
+import pydeck as pdk
 
-# 🎨 Branding (Keep that Karnataka Theme!)
-st.set_page_config(page_title="LuruPulse", layout="wide")
+st.set_page_config(page_icon="💛❤️", page_title="Ooru_insights", layout="wide", initial_sidebar_state="collapsed")
 
-# 📂 1. Load your local file (Replace 'your_data.csv' with your actual filename)
-FILE_NAME = "Banglore_traffic_Dataset.csv" 
+# Load the data from the data folder
+@st.cache_data
+def load_data():
+    return pd.read_csv("data/Banglore_traffic_Cleaned.csv")
 
-try:
-    df = pd.read_csv(FILE_NAME)
-    st.sidebar.success(f"✅ Loaded {FILE_NAME}")
-except FileNotFoundError:
-    st.sidebar.error(f"❌ Could not find {FILE_NAME}. Check the filename!")
-    st.stop()
+df = load_data()
 
-# 🏙️ 2. Title & Pulse
-st.title("LuruPulse: Bengaluru Urban Analytics")
-st.markdown("---")
-age=st.button("click")
-# 📊 3. The "Pulse" Dashboard (First look at your data)
-st.subheader("Raw Data Preview")
-st.dataframe(df.head(10)) # Shows the first 10 rows
+st.title("🚦 Ooru_insights: Traffic Stress Map")
 
-# 🔍 4. Column Explorer (Let's see what we're working with)
-st.columns.write("### Data Summary")
-st.columns.write(f"Total Rows: {len(df)}")
-st.columns.write(f"Columns: {list(df.columns)}")
+# Sidebar for Filtering
+area = st.sidebar.multiselect("Select Area", options=df['Area Name'].unique(), default=df['Area Name'].unique()[:5])
+filtered_df = df[df['Area Name'].isin(area)]
+
+# The 3D Hexagon Map
+st.pydeck_chart(pdk.Deck(
+    initial_view_state=pdk.ViewState(latitude=12.9716, longitude=77.5946, zoom=11, pitch=45),
+    layers=[
+        pdk.Layer(
+            'HexagonLayer',
+            data=filtered_df,
+            get_position='[longitude, latitude]',
+            radius=200,
+            elevation_scale=10, # Height of the towers
+            elevation_range=[0, 1000],
+            pickable=True,
+            extruded=True,
+        ),
+    ],
+))

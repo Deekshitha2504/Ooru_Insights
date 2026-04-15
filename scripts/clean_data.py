@@ -1,6 +1,7 @@
 import sys
 import pandas as pd
 import numpy as np
+import os   
 
 def clean_bengaluru_traffic_data(input_csv, output_csv):#taking Banglore_traffic_Dataset as input CSV and creating Banglore_traffic_Cleaned as output CSV
     
@@ -51,17 +52,25 @@ def clean_bengaluru_traffic_data(input_csv, output_csv):#taking Banglore_traffic
     df['Is_Weekend'] = df['Day_of_Week'] >= 5
     df['Month'] = df['Date'].dt.month
 
-    print("\n--- 6. Adding Stress Score ---")                        
-    df['Stress Score']=(df['Traffic Volume']/df['Average Speed'])
+    print("\n--- 6. Adding Stress Score ---")
+    max_vol = df['Traffic Volume'].max()
+    vol_norm = df['Traffic Volume'] / max_vol
+    speed_stress = 1 - (df['Average Speed'] / 60)
+    speed_stress = speed_stress.clip(lower=0) 
+    df['Stress_Score'] = ((vol_norm * 0.4) + (speed_stress * 0.4) + (df['Incident Reports'].pipe(lambda x: x/x.max()) * 0.2)) * 100
     
     print(f"\n--- Saving Cleaned Dataset ---")
     df.to_csv(output_csv, index=False)
     print(f"\nDataset successfully saved to '{output_csv}'!")
 
 if __name__ == "__main__":
-    INPUT_FILE = "Banglore_traffic_Dataset.csv"
-    OUTPUT_FILE = "Banglore_traffic_Cleaned.csv"
-    LOG_FILE = "clean_data_output.txt"
+    # Get the directory where this script is located
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Point to the data folder (Up one level, then into 'data')
+    INPUT_FILE = os.path.join(base_dir, "..", "data", "Banglore_traffic_Dataset.csv")
+    OUTPUT_FILE = os.path.join(base_dir, "..", "data", "Banglore_traffic_Cleaned.csv")
+    LOG_FILE = os.path.join(base_dir, "..","scripts", "clean_data_output.txt")
     
     with open(LOG_FILE, 'w') as f:
         sys.stdout = f #logging everything into the text file which is been printed into the terminal for record 
