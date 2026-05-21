@@ -21,7 +21,7 @@ Data columns (total 16 columns):
  14  Weather Conditions                  8936 non-null   str    
  15  Roadwork and Construction Activity  8936 non-null   str    
 dtypes: float64(8), int64(3), str(5)
-memory usage: 1.1 MB
+memory usage: 1.4 MB
 
 === MISSING VALUES ===
 Date                                  0
@@ -134,3 +134,4 @@ min       4233.000000  ...                     66.000000
 max      72039.000000  ...                    243.000000
 
 [8 rows x 11 columns]
+Total Number of Area Names:8

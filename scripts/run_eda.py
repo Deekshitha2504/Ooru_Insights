@@ -1,9 +1,17 @@
 import pandas as pd
 import sys
+import os
 
 
-with open('eda_results.txt', 'w') as f:              # to write into a text file
-    df = pd.read_csv('Banglore_traffic_Dataset.csv') # to read the CSV file
+# Get the directory where this script is located
+base_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Point to the data folder and output file
+INPUT_FILE = os.path.join(base_dir, "..", "data", "Banglore_traffic_Dataset.csv")
+OUTPUT_FILE = os.path.join(base_dir, "eda_results.txt")
+
+with open(OUTPUT_FILE, 'w') as f:              # to write into a text file
+    df = pd.read_csv(INPUT_FILE) # to read the CSV file
 
     f.write("=== DATA INFO ===\n")
     import io                   # to hold the text into a virtual file instead of printing it into the screen
@@ -27,3 +35,5 @@ with open('eda_results.txt', 'w') as f:              # to write into a text file
     
     f.write("\n=== NUMERIC STATISTICS ===\n")
     f.write(str(df.describe()) + "\n")  # to  write mean, median, max etc of the dataset
+    f.write("Total Number of Area Names:")
+    f.write(str(len(df['Area Name'].unique())) + "\n")
